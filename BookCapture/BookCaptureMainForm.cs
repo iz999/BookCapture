@@ -414,5 +414,10 @@ namespace BookCapture
             TxtKeyValue.Text = SystemFunction.GetPressedKey().ToString();
             TxtKeyValue.BackColor = SystemColors.ControlLight;
         }
+
+        private void BookCaptureMainForm_LocationChanged(object sender, EventArgs e)
+        {
+            mainFormPosition = new Point(this.Left, this.Top);
+        }
     }
 }

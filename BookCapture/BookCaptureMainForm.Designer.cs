@@ -273,6 +273,7 @@
             this.Text = "Capture Macro";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BookCaptureMainForm_FormClosing);
             this.Load += new System.EventHandler(this.BookCaptureMainForm_Load);
+            this.LocationChanged += new System.EventHandler(this.BookCaptureMainForm_LocationChanged);
             ((System.ComponentModel.ISupportInitialize)(this.PbCapturedImg)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PbCaptureBox)).EndInit();
             this.ResumeLayout(false);
