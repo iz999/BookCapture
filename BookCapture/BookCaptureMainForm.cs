@@ -409,7 +409,7 @@ namespace BookCapture
             }
         }
 
-        public void SetPressedKey()
+        public void SetPressedKey() // 설정된 키 보이기
         {
             TxtKeyValue.Text = SystemFunction.GetPressedKey().ToString();
             TxtKeyValue.BackColor = SystemColors.ControlLight;
