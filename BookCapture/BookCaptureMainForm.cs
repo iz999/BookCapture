@@ -382,7 +382,7 @@ namespace BookCapture
             }
         }        
 
-        public bool IsCaptureBoxDrawing()
+        public bool IsCaptureBoxDrawing() 
         {
             return captureProcessStart;
         }
