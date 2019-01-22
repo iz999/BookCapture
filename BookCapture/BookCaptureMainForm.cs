@@ -397,7 +397,7 @@ namespace BookCapture
             TxtKeyValue.BackColor = Color.Green;
         }
 
-        public bool IsSetKey()
+        public bool IsSetKey() //매크로 키 설정
         {
             if (TxtKeyValue.BackColor == Color.Green)
             {
