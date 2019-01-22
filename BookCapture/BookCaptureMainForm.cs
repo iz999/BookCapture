@@ -387,7 +387,7 @@ namespace BookCapture
             return captureProcessStart;
         }
 
-        public bool IsCaptureMacroRunning()
+        public bool IsCaptureMacroRunning() // 캡처매크로 동작 확인
         {
             return captureMacroStart;
         }
