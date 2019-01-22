@@ -395,6 +395,7 @@ namespace BookCapture
         private void BtnSetKey_Click(object sender, EventArgs e)
         {
             TxtKeyValue.BackColor = Color.Green;
+            BtnSetKey.Enabled = false;
         }
 
         public bool IsSetKey() //매크로 설정모드
@@ -413,11 +414,13 @@ namespace BookCapture
         {
             TxtKeyValue.Text = SystemFunction.GetPressedKey().ToString();
             TxtKeyValue.BackColor = SystemColors.ControlLight;
+            BtnSetKey.Enabled = true;
         }
 
         private void BookCaptureMainForm_LocationChanged(object sender, EventArgs e)
         {
             mainFormPosition = new Point(this.Left, this.Top);
         }
+        
     }
 }

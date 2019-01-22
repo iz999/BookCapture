@@ -45,6 +45,8 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.TxtRepeatCnt = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
+            this.BtnSetMouseXY = new System.Windows.Forms.Button();
+            this.textBox3 = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.PbCapturedImg)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PbCaptureBox)).BeginInit();
             this.SuspendLayout();
@@ -53,7 +55,7 @@
             // 
             this.TxtKeyValue.Enabled = false;
             this.TxtKeyValue.Font = new System.Drawing.Font("굴림", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.TxtKeyValue.Location = new System.Drawing.Point(95, 17);
+            this.TxtKeyValue.Location = new System.Drawing.Point(95, 47);
             this.TxtKeyValue.Name = "TxtKeyValue";
             this.TxtKeyValue.ReadOnly = true;
             this.TxtKeyValue.Size = new System.Drawing.Size(173, 22);
@@ -62,7 +64,7 @@
             // TxtDelayTime
             // 
             this.TxtDelayTime.Font = new System.Drawing.Font("굴림", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.TxtDelayTime.Location = new System.Drawing.Point(95, 103);
+            this.TxtDelayTime.Location = new System.Drawing.Point(95, 133);
             this.TxtDelayTime.Name = "TxtDelayTime";
             this.TxtDelayTime.Size = new System.Drawing.Size(123, 22);
             this.TxtDelayTime.TabIndex = 13;
@@ -74,7 +76,7 @@
             // 
             this.BtnStart.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.BtnStart.Font = new System.Drawing.Font("굴림", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.BtnStart.Location = new System.Drawing.Point(140, 159);
+            this.BtnStart.Location = new System.Drawing.Point(140, 189);
             this.BtnStart.Name = "BtnStart";
             this.BtnStart.Size = new System.Drawing.Size(128, 22);
             this.BtnStart.TabIndex = 14;
@@ -85,7 +87,7 @@
             // TxtRepeatTime
             // 
             this.TxtRepeatTime.Font = new System.Drawing.Font("굴림", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.TxtRepeatTime.Location = new System.Drawing.Point(189, 46);
+            this.TxtRepeatTime.Location = new System.Drawing.Point(189, 19);
             this.TxtRepeatTime.Name = "TxtRepeatTime";
             this.TxtRepeatTime.Size = new System.Drawing.Size(79, 22);
             this.TxtRepeatTime.TabIndex = 16;
@@ -97,7 +99,7 @@
             // 
             this.TxtCaptureProgram.Enabled = false;
             this.TxtCaptureProgram.Font = new System.Drawing.Font("굴림", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.TxtCaptureProgram.Location = new System.Drawing.Point(95, 131);
+            this.TxtCaptureProgram.Location = new System.Drawing.Point(95, 161);
             this.TxtCaptureProgram.Name = "TxtCaptureProgram";
             this.TxtCaptureProgram.ReadOnly = true;
             this.TxtCaptureProgram.Size = new System.Drawing.Size(173, 22);
@@ -107,7 +109,7 @@
             // 
             this.BtnSetKey.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.BtnSetKey.Font = new System.Drawing.Font("굴림", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.BtnSetKey.Location = new System.Drawing.Point(14, 17);
+            this.BtnSetKey.Location = new System.Drawing.Point(14, 47);
             this.BtnSetKey.Name = "BtnSetKey";
             this.BtnSetKey.Size = new System.Drawing.Size(75, 22);
             this.BtnSetKey.TabIndex = 22;
@@ -120,7 +122,7 @@
             // 
             this.button2.Enabled = false;
             this.button2.Font = new System.Drawing.Font("굴림", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.button2.Location = new System.Drawing.Point(14, 103);
+            this.button2.Location = new System.Drawing.Point(14, 133);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 22);
             this.button2.TabIndex = 23;
@@ -132,7 +134,7 @@
             // 
             this.button3.Enabled = false;
             this.button3.Font = new System.Drawing.Font("굴림", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.button3.Location = new System.Drawing.Point(14, 46);
+            this.button3.Location = new System.Drawing.Point(14, 76);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(75, 22);
             this.button3.TabIndex = 24;
@@ -143,7 +145,7 @@
             // PbCapturedImg
             // 
             this.PbCapturedImg.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.PbCapturedImg.Location = new System.Drawing.Point(278, 17);
+            this.PbCapturedImg.Location = new System.Drawing.Point(278, 47);
             this.PbCapturedImg.Name = "PbCapturedImg";
             this.PbCapturedImg.Size = new System.Drawing.Size(122, 164);
             this.PbCapturedImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -152,7 +154,7 @@
             // 
             // PbCaptureBox
             // 
-            this.PbCaptureBox.Location = new System.Drawing.Point(292, 25);
+            this.PbCaptureBox.Location = new System.Drawing.Point(292, 55);
             this.PbCaptureBox.Name = "PbCaptureBox";
             this.PbCaptureBox.Size = new System.Drawing.Size(20, 14);
             this.PbCaptureBox.TabIndex = 29;
@@ -167,7 +169,7 @@
             // 
             this.BtnStartCapture.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.BtnStartCapture.Font = new System.Drawing.Font("굴림", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.BtnStartCapture.Location = new System.Drawing.Point(14, 159);
+            this.BtnStartCapture.Location = new System.Drawing.Point(14, 189);
             this.BtnStartCapture.Name = "BtnStartCapture";
             this.BtnStartCapture.Size = new System.Drawing.Size(120, 22);
             this.BtnStartCapture.TabIndex = 30;
@@ -179,7 +181,7 @@
             // 
             this.BtnCaptureProgram.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.BtnCaptureProgram.Font = new System.Drawing.Font("굴림", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.BtnCaptureProgram.Location = new System.Drawing.Point(14, 131);
+            this.BtnCaptureProgram.Location = new System.Drawing.Point(14, 161);
             this.BtnCaptureProgram.Name = "BtnCaptureProgram";
             this.BtnCaptureProgram.Size = new System.Drawing.Size(75, 22);
             this.BtnCaptureProgram.TabIndex = 31;
@@ -191,7 +193,7 @@
             // 
             this.BtnSaveFolder.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.BtnSaveFolder.Font = new System.Drawing.Font("굴림", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.BtnSaveFolder.Location = new System.Drawing.Point(14, 75);
+            this.BtnSaveFolder.Location = new System.Drawing.Point(14, 105);
             this.BtnSaveFolder.Name = "BtnSaveFolder";
             this.BtnSaveFolder.Size = new System.Drawing.Size(75, 22);
             this.BtnSaveFolder.TabIndex = 32;
@@ -203,7 +205,7 @@
             // 
             this.TxtSaveFolder.Enabled = false;
             this.TxtSaveFolder.Font = new System.Drawing.Font("굴림", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.TxtSaveFolder.Location = new System.Drawing.Point(95, 75);
+            this.TxtSaveFolder.Location = new System.Drawing.Point(95, 105);
             this.TxtSaveFolder.Name = "TxtSaveFolder";
             this.TxtSaveFolder.ReadOnly = true;
             this.TxtSaveFolder.Size = new System.Drawing.Size(173, 22);
@@ -214,7 +216,7 @@
             this.textBox1.BackColor = System.Drawing.SystemColors.ControlLight;
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox1.Font = new System.Drawing.Font("굴림", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.textBox1.Location = new System.Drawing.Point(241, 106);
+            this.textBox1.Location = new System.Drawing.Point(241, 136);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(27, 15);
             this.textBox1.TabIndex = 34;
@@ -223,7 +225,7 @@
             // TxtRepeatCnt
             // 
             this.TxtRepeatCnt.Font = new System.Drawing.Font("굴림", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.TxtRepeatCnt.Location = new System.Drawing.Point(95, 46);
+            this.TxtRepeatCnt.Location = new System.Drawing.Point(95, 76);
             this.TxtRepeatCnt.Name = "TxtRepeatCnt";
             this.TxtRepeatCnt.ReadOnly = true;
             this.TxtRepeatCnt.Size = new System.Drawing.Size(76, 22);
@@ -237,18 +239,44 @@
             this.textBox2.BackColor = System.Drawing.SystemColors.ControlLight;
             this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox2.Font = new System.Drawing.Font("굴림", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.textBox2.Location = new System.Drawing.Point(177, 50);
+            this.textBox2.Location = new System.Drawing.Point(177, 80);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(10, 15);
             this.textBox2.TabIndex = 36;
             this.textBox2.Text = "/";
+            // 
+            // BtnSetMouseXY
+            // 
+            this.BtnSetMouseXY.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.BtnSetMouseXY.Font = new System.Drawing.Font("굴림", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.BtnSetMouseXY.Location = new System.Drawing.Point(14, 19);
+            this.BtnSetMouseXY.Name = "BtnSetMouseXY";
+            this.BtnSetMouseXY.Size = new System.Drawing.Size(75, 22);
+            this.BtnSetMouseXY.TabIndex = 37;
+            this.BtnSetMouseXY.TabStop = false;
+            this.BtnSetMouseXY.Text = "마우스";
+            this.BtnSetMouseXY.UseVisualStyleBackColor = true;
+            // 
+            // textBox3
+            // 
+            this.textBox3.Font = new System.Drawing.Font("굴림", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.textBox3.Location = new System.Drawing.Point(95, 19);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.ReadOnly = true;
+            this.textBox3.Size = new System.Drawing.Size(76, 22);
+            this.textBox3.TabIndex = 38;
+            this.textBox3.TabStop = false;
+            this.textBox3.Text = "0";
+            this.textBox3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // BookCaptureMainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.ClientSize = new System.Drawing.Size(420, 195);
+            this.ClientSize = new System.Drawing.Size(420, 274);
+            this.Controls.Add(this.textBox3);
+            this.Controls.Add(this.BtnSetMouseXY);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.TxtRepeatCnt);
             this.Controls.Add(this.textBox1);
@@ -299,6 +327,8 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.TextBox TxtRepeatCnt;
         private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Button BtnSetMouseXY;
+        private System.Windows.Forms.TextBox textBox3;
     }
 }
 
