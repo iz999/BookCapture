@@ -28,6 +28,8 @@ namespace BookCapture
         private bool captureTargetSet = false;
         private bool captureMacroStart = false;
 
+        private bool mousePostionSetting = false;
+
         private string targetWindowName;
         private string targetWindowPID;
 
@@ -37,10 +39,20 @@ namespace BookCapture
 
         private Size mainFormSize;
         private Point mainFormPosition;
-        private Timer timer;
+        private Timer macroTimer = new Timer();
         private int timerCount = 0;
         private CaptureBoxForm captureBoxForm = new CaptureBoxForm();
         private PdfMaker pdfMaker;
+
+        private Bitmap prevBmap = null; // 빈 비트맵 생성
+
+        enum MacroMode
+        {
+            KeyMode,
+            MouseMode
+        }
+
+        private MacroMode macroMode;
 
 
         public BookCaptureMainForm()
@@ -136,7 +148,7 @@ namespace BookCapture
 
         private void BookCaptureMainForm_Load(object sender, EventArgs e)
         {
-            SystemFunction.KeyHookingStart(this); //키보드 후킹 프로세스 시작
+            SystemFunction.KeyboardHookingStart(this); //후킹 프로세스 시작
 
             // 원래 Form 크기 저장
             mainFormPosition = new Point(this.Left, this.Top);
@@ -146,7 +158,7 @@ namespace BookCapture
 
         private void BookCaptureMainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            SystemFunction.KeyHookingStop(); //키보드 후킹 종료
+            SystemFunction.KeyboardHookingStop(); //후킹 종료
         }        
 
         public void StopCapturing()
@@ -209,34 +221,41 @@ namespace BookCapture
         {
             if (captureTargetSet == true && TxtRepeatTime.Text != null && TxtSaveFolder.Text != null && TxtCaptureProgram != null && Int32.Parse(targetWindowPID) > 0)
             {
-                captureBoxForm = new CaptureBoxForm();
+                if (TxtKeyValue.Text != null || TxtMousePosX.Text != null)
+                {
+                    captureBoxForm = new CaptureBoxForm();
 
-                captureBoxForm.Show();
+                    captureBoxForm.Show();
 
-                captureBoxForm.Left = captureTarget.Left;
-                captureBoxForm.Top = captureTarget.Top;
-                captureBoxForm.Size = captureTarget.Size;
-                captureBoxForm.FormBorderStyle = FormBorderStyle.None;
-                captureBoxForm.BackColor = Color.Red;
-                captureBoxForm.TransparencyKey = Color.Violet;
+                    captureBoxForm.Left = captureTarget.Left;
+                    captureBoxForm.Top = captureTarget.Top;
+                    captureBoxForm.Size = captureTarget.Size;
+                    captureBoxForm.FormBorderStyle = FormBorderStyle.None;
+                    captureBoxForm.BackColor = Color.Red;
+                    captureBoxForm.TransparencyKey = Color.Violet;
 
-                Panel formCaptureBox = captureBoxForm.GetCaptureBox();
+                    Panel formCaptureBox = captureBoxForm.GetCaptureBox();
 
-                formCaptureBox.BackColor = captureBoxForm.TransparencyKey;
-                formCaptureBox.Location = new Point(1, 1);
-                formCaptureBox.Size = new Size(captureBoxForm.Width - 2, captureBoxForm.Height - 2);
-                formCaptureBox.Visible = true;
+                    formCaptureBox.BackColor = captureBoxForm.TransparencyKey;
+                    formCaptureBox.Location = new Point(1, 1);
+                    formCaptureBox.Size = new Size(captureBoxForm.Width - 2, captureBoxForm.Height - 2);
+                    formCaptureBox.Visible = true;
 
 
-                timer = new Timer();
-                timer.Interval = Int32.Parse(TxtDelayTime.Text);
-                timer.Tick += new EventHandler(CaptureEvent);
+                    macroTimer = new Timer();
+                    macroTimer.Interval = Int32.Parse(TxtDelayTime.Text);
+                    macroTimer.Tick += new EventHandler(CaptureEvent);
 
-                BtnStart.BackColor = Color.Aquamarine;
+                    BtnStart.BackColor = Color.Aquamarine;
 
-                pdfMaker = new PdfMaker(TxtSaveFolder.Text);
+                    pdfMaker = new PdfMaker(TxtSaveFolder.Text);
 
-                timer.Start();
+                    macroTimer.Start();
+                }
+                else
+                {
+                    MessageBox.Show("매크로 키 또는 마우스 위치가 지정되지 않았습니다.", "정보부족", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             else
             {
@@ -279,11 +298,33 @@ namespace BookCapture
 
         private void CaptureEvent(object sender, EventArgs e) //타이머 이벤트
         {
-            captureMacroStart = true;
+            captureMacroStart = true;            
             
             Bitmap capturedImg = captureBoxForm.CaptureImg();
 
-            capturedImg.Save(TxtSaveFolder.Text + @"\" + DateTime.Now.ToString("yyyyMMddHHmmssffffff") + ".jpg", ImageFormat.Jpeg);
+            if (!CompareBitmap(prevBmap, capturedImg))
+            {
+                
+
+                capturedImg.Save(TxtSaveFolder.Text + @"\" + DateTime.Now.ToString("yyyyMMddHHmmssffffff") + ".jpg", ImageFormat.Jpeg);
+
+                MemoryStream stream = new MemoryStream();
+                capturedImg.Save(stream, ImageFormat.Bmp);
+                pdfMaker.AddPdfPage(stream.ToArray());
+
+
+                PbCapturedImg.Image = capturedImg;
+
+                timerCount++;
+
+                TxtRepeatCnt.Text = timerCount.ToString();
+
+                logger.Info("타이머 카운트 : " + timerCount.ToString());
+            }
+
+            prevBmap = capturedImg;
+
+            /*capturedImg.Save(TxtSaveFolder.Text + @"\" + DateTime.Now.ToString("yyyyMMddHHmmssffffff") + ".jpg", ImageFormat.Jpeg);
 
             MemoryStream stream = new MemoryStream();
             capturedImg.Save(stream, ImageFormat.Bmp);
@@ -296,11 +337,11 @@ namespace BookCapture
 
             TxtRepeatCnt.Text = timerCount.ToString();
 
-            logger.Info("타이머 카운트 : " + timerCount.ToString());
+            logger.Info("타이머 카운트 : " + timerCount.ToString());*/
 
             if (timerCount >= Int32.Parse(TxtRepeatTime.Text))
             {
-                TimerStop();       
+                MacroTimerStop();       
             }
             else
             {
@@ -308,20 +349,29 @@ namespace BookCapture
 
                 logger.Info("processSwiching");
 
-                SystemFunction.VKeyPress(TxtKeyValue.Text);
+                if (macroMode == MacroMode.KeyMode)
+                {
+                    SystemFunction.VKeyPress(TxtKeyValue.Text);
+                }
+                else
+                {
+                    SystemFunction.VMouseClick(Int32.Parse(TxtMousePosX.Text), Int32.Parse(TxtMousePosY.Text));
+                }
 
                 processSwiching.Rollback();
             }
         }
 
-        public void TimerStop()
+        public void MacroTimerStop()
         {
-            timer.Stop();
+            macroTimer.Stop();
             pdfMaker.ClosePdfFile();
             captureBoxForm.Dispose();
             timerCount = 0;
             TxtRepeatCnt.Text = timerCount.ToString();
             BtnStart.BackColor = SystemColors.ControlLight;
+            captureMacroStart = false;
+            prevBmap = null;
         }
 
         private void PrepareCapture() // 캡쳐 준비
@@ -394,13 +444,13 @@ namespace BookCapture
 
         private void BtnSetKey_Click(object sender, EventArgs e)
         {
-            TxtKeyValue.BackColor = Color.Green;
+            TxtKeyValue.BackColor = Color.FloralWhite;
             BtnSetKey.Enabled = false;
         }
 
         public bool IsSetKey() //매크로 설정모드
         {
-            if (TxtKeyValue.BackColor == Color.Green)
+            if (TxtKeyValue.BackColor == Color.FloralWhite)
             {
                 return true;
             }
@@ -419,8 +469,75 @@ namespace BookCapture
 
         private void BookCaptureMainForm_LocationChanged(object sender, EventArgs e)
         {
-            mainFormPosition = new Point(this.Left, this.Top);
+            if (!captureProcessStart)
+            {
+                mainFormPosition = new Point(this.Left, this.Top);
+            }
         }
-        
+
+        private void RdbModeSelect1_CheckedChanged(object sender, EventArgs e)
+        {
+            macroMode = MacroMode.KeyMode;
+            BtnSetKey.Enabled = true;
+            BtnSetKey.FlatStyle = FlatStyle.Popup;
+            BtnSetMouseXY.Enabled = false;
+            BtnSetMouseXY.FlatStyle = FlatStyle.Standard;
+        }
+
+        private void RdbModeSelect2_CheckedChanged(object sender, EventArgs e)
+        {
+            macroMode = MacroMode.MouseMode;
+            BtnSetKey.Enabled = false;
+            BtnSetKey.FlatStyle = FlatStyle.Standard;
+            BtnSetMouseXY.Enabled = true;
+            BtnSetMouseXY.FlatStyle = FlatStyle.Popup;
+        }
+
+        private void BtnSetMouseXY_Click(object sender, EventArgs e)
+        {
+            SystemFunction.MouseHookingStart();
+            mousePostionSetting = true;
+            this.TopMost = true;
+        }
+
+        public bool GetMousePostionSetting()
+        {
+            return mousePostionSetting;
+        }
+
+        public void SetMousePostionSetting(bool boolVal)
+        {
+            mousePostionSetting = boolVal;
+            this.TopMost = false;
+        }
+
+        public void SetMousePosition(int x, int y)
+        {
+            TxtMousePosX.Text = x.ToString();
+            TxtMousePosY.Text = y.ToString();
+        }
+
+        private bool CompareBitmap(Bitmap bMap1, Bitmap bMap2)
+        {
+            if (bMap1.Width == bMap2.Width && bMap1.Height == bMap2.Height)
+            {
+                for (int i = 0; i < bMap1.Width; i++)
+                {
+                    for (int j = 0; j <bMap1.Height; j++)
+                    {
+                        if (bMap1.GetPixel(i, j) != bMap2.GetPixel(i, j))
+                        {
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }
