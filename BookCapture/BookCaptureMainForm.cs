@@ -44,12 +44,22 @@ namespace BookCapture
         private CaptureBoxForm captureBoxForm = new CaptureBoxForm();
         private PdfMaker pdfMaker;
 
-        private Bitmap prevBmap = null; // 빈 비트맵 생성
+        private Bitmap prevBmap; // 빈 비트맵 생성
 
-        enum MacroMode
+        private enum MacroMode
         {
             KeyMode,
             MouseMode
+        }
+
+        private enum BitmapStatus
+        {
+            Defalt,
+            Normal,
+            Duplicate,
+            Empty,
+            CurImgVacant,
+            SizeDiff
         }
 
         private MacroMode macroMode;
@@ -302,9 +312,10 @@ namespace BookCapture
             
             Bitmap capturedImg = captureBoxForm.CaptureImg();
 
-            if (!CompareBitmap(prevBmap, capturedImg))
+            BitmapStatus status = ProofBitmap(prevBmap, capturedImg);
+
+            if (status == BitmapStatus.Defalt || status == BitmapStatus.Normal)
             {
-                
 
                 capturedImg.Save(TxtSaveFolder.Text + @"\" + DateTime.Now.ToString("yyyyMMddHHmmssffffff") + ".jpg", ImageFormat.Jpeg);
 
@@ -312,34 +323,25 @@ namespace BookCapture
                 capturedImg.Save(stream, ImageFormat.Bmp);
                 pdfMaker.AddPdfPage(stream.ToArray());
 
-
                 PbCapturedImg.Image = capturedImg;
 
                 timerCount++;
-
                 TxtRepeatCnt.Text = timerCount.ToString();
-
-                logger.Info("타이머 카운트 : " + timerCount.ToString());
+                prevBmap = capturedImg;
             }
-
-            prevBmap = capturedImg;
-
-            /*capturedImg.Save(TxtSaveFolder.Text + @"\" + DateTime.Now.ToString("yyyyMMddHHmmssffffff") + ".jpg", ImageFormat.Jpeg);
-
-            MemoryStream stream = new MemoryStream();
-            capturedImg.Save(stream, ImageFormat.Bmp);
-            pdfMaker.AddPdfPage(stream.ToArray());
+            else if(status == BitmapStatus.Duplicate || status == BitmapStatus.Empty || status == BitmapStatus.CurImgVacant) // 중복이거나 내용이 없을 경우, 캡쳐한 이미지가 null 일경우 건너뜀
+            {
+                logger.Warn("캡쳐 프로세스 스킵 / 스킵원인 : "  + status.ToString());
+                return;
+            }
+            else
+            {
+                logger.Error("이미지 캡쳐 매크로 처리 프로세스 오류 / Bitmap Status : " + status.ToString());
+                MacroTimerStop();
+            }
             
 
-            PbCapturedImg.Image = capturedImg;            
-            
-            timerCount++;
-
-            TxtRepeatCnt.Text = timerCount.ToString();
-
-            logger.Info("타이머 카운트 : " + timerCount.ToString());*/
-
-            if (timerCount >= Int32.Parse(TxtRepeatTime.Text))
+            if (timerCount >= Int32.Parse(TxtRepeatTime.Text)) // 정해진 카운트를 채웠을 경우 종료
             {
                 MacroTimerStop();       
             }
@@ -371,7 +373,7 @@ namespace BookCapture
             TxtRepeatCnt.Text = timerCount.ToString();
             BtnStart.BackColor = SystemColors.ControlLight;
             captureMacroStart = false;
-            prevBmap = null;
+            prevBmap = null; // 비트맵 초기화
         }
 
         private void PrepareCapture() // 캡쳐 준비
@@ -517,27 +519,49 @@ namespace BookCapture
             TxtMousePosY.Text = y.ToString();
         }
 
-        private bool CompareBitmap(Bitmap bMap1, Bitmap bMap2)
+        private BitmapStatus ProofBitmap(Bitmap prevImg, Bitmap curImg)
         {
-            if (bMap1.Width == bMap2.Width && bMap1.Height == bMap2.Height)
+            if (curImg == null || (curImg.Width == 0 && curImg.Height == 0))
             {
-                for (int i = 0; i < bMap1.Width; i++)
+                return BitmapStatus.CurImgVacant; // 뒤 이미지가 없음
+            }
+
+            if (prevImg == null)
+            {
+                return BitmapStatus.Defalt; //빈 비트맵 이미지
+            }
+
+            if (prevImg.Width != curImg.Width || prevImg.Height != curImg.Height)
+            {
+                return BitmapStatus.SizeDiff; //앞뒤 비트맵 이미지 크기 다름
+            }
+
+            Color color = curImg.GetPixel(0, 0); // 첫 픽셀 컬러
+            for (int i = 0; i < prevImg.Width; i++)
+            {
+                for (int j = 0; j < prevImg.Height; j++)
                 {
-                    for (int j = 0; j <bMap1.Height; j++)
+                    if (curImg.GetPixel(i, j) != color)
                     {
-                        if (bMap1.GetPixel(i, j) != bMap2.GetPixel(i, j))
-                        {
-                            return false;
-                        }
+                        goto PROOF_DUPLICATE; //비트맵 이미지에 내용이 있을 경우 다음 중복 검증으로
                     }
                 }
+            }
+            return BitmapStatus.Empty; //비트맵 이미지에 내용 없음
 
-                return true;
-            }
-            else
+
+            PROOF_DUPLICATE:            
+            for (int i = 0; i < prevImg.Width; i++)
             {
-                return false;
+                for (int j = 0; j < prevImg.Height; j++)
+                {
+                    if (prevImg.GetPixel(i, j) != curImg.GetPixel(i, j))
+                    {
+                        return BitmapStatus.Normal; //중복 아님
+                    }
+                }
             }
+            return BitmapStatus.Duplicate;           
         }
     }
 }
