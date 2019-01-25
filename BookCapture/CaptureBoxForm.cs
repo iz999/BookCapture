@@ -7,11 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NLog;
 
 namespace BookCapture
 {
     public partial class CaptureBoxForm : Form
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         public CaptureBoxForm()
         {
             InitializeComponent();
@@ -27,7 +30,14 @@ namespace BookCapture
             Bitmap bitMap = new Bitmap(PnCaptureBox.Width, PnCaptureBox.Height);
             Graphics graphics = Graphics.FromImage(bitMap);
 
-            graphics.CopyFromScreen(PointToScreen(PnCaptureBox.Location), new Point(0, 0), PnCaptureBox.Size);
+            try
+            {
+                graphics.CopyFromScreen(PointToScreen(PnCaptureBox.Location), new Point(0, 0), PnCaptureBox.Size);
+            }
+            catch (ObjectDisposedException e)
+            {
+                logger.Warn("Capture Box dispose error : " + e.Message);
+            }
 
             return bitMap;
         }

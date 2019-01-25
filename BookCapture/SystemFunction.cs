@@ -88,13 +88,13 @@ namespace BookCapture
 
                 if ((Keys)vKeyCode == Keys.Escape && mainForm.IsCaptureBoxDrawing())
                 {
-                    logger.Info("캡처 영역지정 종료");
+                    logger.Info("Setting Capture Area Stopped");
                     mainForm.StopCapturing();
                 }
 
                 if ((Keys)vKeyCode == Keys.Escape && mainForm.IsCaptureMacroRunning())
                 {
-                    logger.Info("캡처 매크로 종료");
+                    logger.Info("Capture Macro Stopped");
                     mainForm.MacroTimerStop();
                 }
             }

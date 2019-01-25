@@ -42,7 +42,7 @@ namespace BookCapture
 
         public void Swiching(Process targetProcess)
         {
-            logger.Info("Swiching 프로세스 진입");
+            logger.Info("Enter Swiching process");
 
             IntPtr hWnd = targetProcess.MainWindowHandle;
 
@@ -54,13 +54,13 @@ namespace BookCapture
                 // 윈도우 최상위로 만든다
                 SetForegroundWindow(hWnd);                
 
-                logger.Info("현재 활성창 제목 : " + GetCaptionOfActiveWindow());
+                logger.Info("Current Active Window : " + GetCaptionOfActiveWindow());
             }
         }
 
         public void Rollback()
         {
-            logger.Info("Rollback 프로세스 진입");
+            logger.Info("Enter Rollback Process");
 
             IntPtr hWnd = mainProcess.MainWindowHandle;
 
@@ -72,7 +72,7 @@ namespace BookCapture
                 // 윈도우 최상위로 만든다
                 SetForegroundWindow(hWnd);
 
-                logger.Info("현재 활성창 제목 : " + GetCaptionOfActiveWindow());
+                logger.Info("Current Active Window : " + GetCaptionOfActiveWindow());
             }
         }
 

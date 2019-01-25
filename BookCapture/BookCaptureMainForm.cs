@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-using System.Collections;
 using System.Diagnostics;
+using System.Threading;
 using NLog;
 
 namespace BookCapture
@@ -39,12 +33,13 @@ namespace BookCapture
 
         private Size mainFormSize;
         private Point mainFormPosition;
-        private Timer macroTimer = new Timer();
+        private System.Windows.Forms.Timer macroTimer = new System.Windows.Forms.Timer();
         private int timerCount = 0;
         private CaptureBoxForm captureBoxForm = new CaptureBoxForm();
         private PdfMaker pdfMaker;
 
         private Bitmap prevBmap; // 빈 비트맵 생성
+        private int skipCount = 0;
 
         private enum MacroMode
         {
@@ -252,13 +247,17 @@ namespace BookCapture
                     formCaptureBox.Visible = true;
 
 
-                    macroTimer = new Timer();
+                    macroTimer = new System.Windows.Forms.Timer();
                     macroTimer.Interval = Int32.Parse(TxtDelayTime.Text);
                     macroTimer.Tick += new EventHandler(CaptureEvent);
 
                     BtnStart.BackColor = Color.Aquamarine;
 
                     pdfMaker = new PdfMaker(TxtSaveFolder.Text);
+
+                    processSwiching.Swiching(Process.GetProcessById(Int32.Parse(targetWindowPID)));
+
+                    logger.Info("ProcessSwiching Complete");
 
                     macroTimer.Start();
                 }
@@ -312,31 +311,74 @@ namespace BookCapture
             
             Bitmap capturedImg = captureBoxForm.CaptureImg();
 
+            logger.Info("Image Captured");
+
             BitmapStatus status = ProofBitmap(prevBmap, capturedImg);
 
             if (status == BitmapStatus.Defalt || status == BitmapStatus.Normal)
             {
 
-                capturedImg.Save(TxtSaveFolder.Text + @"\" + DateTime.Now.ToString("yyyyMMddHHmmssffffff") + ".jpg", ImageFormat.Jpeg);
+                string fileName = DateTime.Now.ToString("yyyyMMddHHmmssffffff") + ".jpg";
+
+                capturedImg.Save(TxtSaveFolder.Text + @"\" + fileName, ImageFormat.Jpeg);
+
+                logger.Info("Image File Name : " + fileName);
+
+                logger.Info("Image Complete");
 
                 MemoryStream stream = new MemoryStream();
                 capturedImg.Save(stream, ImageFormat.Bmp);
                 pdfMaker.AddPdfPage(stream.ToArray());
 
+                logger.Info("A page add to pdf file");
+
                 PbCapturedImg.Image = capturedImg;
+
+                logger.Info("Set a Thumnail");
 
                 timerCount++;
                 TxtRepeatCnt.Text = timerCount.ToString();
+
+                logger.Info("Page Count : " + timerCount.ToString());
+
                 prevBmap = capturedImg;
             }
             else if(status == BitmapStatus.Duplicate || status == BitmapStatus.Empty || status == BitmapStatus.CurImgVacant) // 중복이거나 내용이 없을 경우, 캡쳐한 이미지가 null 일경우 건너뜀
             {
-                logger.Warn("캡쳐 프로세스 스킵 / 스킵원인 : "  + status.ToString());
+                skipCount++;
+                logger.Warn("Capture Process Skiped / Skiped by : "  + status.ToString() + "/ Skip Count :" + skipCount.ToString());
+
+                if (skipCount > 3)
+                {
+                    logger.Info("Retry to capture");
+
+                    processSwiching.Swiching(Process.GetProcessById(Int32.Parse(targetWindowPID)));
+
+                    logger.Info("ProcessSwiching Complete");
+
+                    //Thread.Sleep(500);
+
+                    //logger.Info("Process Sleep End");
+
+                    if (macroMode == MacroMode.KeyMode)
+                    {
+                        SystemFunction.VKeyPress(TxtKeyValue.Text);
+                        logger.Info("Macro Key Pressed");
+                    }
+                    else
+                    {
+                        SystemFunction.VMouseClick(Int32.Parse(TxtMousePosX.Text), Int32.Parse(TxtMousePosY.Text));
+                        logger.Info("Macro Mouse Button Clicked");
+                    }
+
+                    skipCount = 0;
+                }
+
                 return;
             }
             else
             {
-                logger.Error("이미지 캡쳐 매크로 처리 프로세스 오류 / Bitmap Status : " + status.ToString());
+                logger.Error("Image Capture Macro Error / Bitmap Status : " + status.ToString());
                 MacroTimerStop();
             }
             
@@ -349,18 +391,26 @@ namespace BookCapture
             {
                 processSwiching.Swiching(Process.GetProcessById(Int32.Parse(targetWindowPID)));
 
-                logger.Info("processSwiching");
+                logger.Info("ProcessSwiching Complete");
+
+                //Thread.Sleep(500);
+
+                //logger.Info("Process Sleep End");
 
                 if (macroMode == MacroMode.KeyMode)
                 {
                     SystemFunction.VKeyPress(TxtKeyValue.Text);
+                    logger.Info("Macro Key Pressed");
                 }
                 else
                 {
                     SystemFunction.VMouseClick(Int32.Parse(TxtMousePosX.Text), Int32.Parse(TxtMousePosY.Text));
+                    logger.Info("Macro Mouse Button Clicked");
                 }
 
-                processSwiching.Rollback();
+                skipCount = 0;
+
+                //processSwiching.Rollback();
             }
         }
 
