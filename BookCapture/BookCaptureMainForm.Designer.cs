@@ -79,7 +79,7 @@
             // 
             // BtnStart
             // 
-            this.BtnStart.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.BtnStart.Enabled = false;
             this.BtnStart.Font = new System.Drawing.Font("굴림", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.BtnStart.Location = new System.Drawing.Point(141, 220);
             this.BtnStart.Name = "BtnStart";
@@ -87,7 +87,6 @@
             this.BtnStart.TabIndex = 14;
             this.BtnStart.Text = "매크로시작";
             this.BtnStart.UseVisualStyleBackColor = true;
-            this.BtnStart.Click += new System.EventHandler(this.BtnStart_Click);
             // 
             // TxtRepeatTime
             // 
@@ -109,6 +108,7 @@
             this.TxtCaptureProgram.ReadOnly = true;
             this.TxtCaptureProgram.Size = new System.Drawing.Size(173, 22);
             this.TxtCaptureProgram.TabIndex = 18;
+            this.TxtCaptureProgram.Visible = false;
             // 
             // BtnSetKey
             // 
@@ -192,6 +192,7 @@
             this.BtnCaptureProgram.TabIndex = 31;
             this.BtnCaptureProgram.Text = "캡처대상";
             this.BtnCaptureProgram.UseVisualStyleBackColor = true;
+            this.BtnCaptureProgram.Visible = false;
             this.BtnCaptureProgram.Click += new System.EventHandler(this.BtnCaptureProgram_Click);
             // 
             // BtnSaveFolder
@@ -314,6 +315,7 @@
             this.RdbModeSelect2.Tag = "MouseMode";
             this.RdbModeSelect2.Text = "마우스모드";
             this.RdbModeSelect2.UseVisualStyleBackColor = true;
+            this.RdbModeSelect2.Visible = false;
             this.RdbModeSelect2.CheckedChanged += new System.EventHandler(this.RdbModeSelect2_CheckedChanged);
             // 
             // GrbModeSelection
@@ -357,7 +359,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "BookCaptureMainForm";
-            this.Text = "Capture Macro";
+            this.Text = "Capture Macro - Press Control Key to Start";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BookCaptureMainForm_FormClosing);
             this.Load += new System.EventHandler(this.BookCaptureMainForm_Load);
             this.LocationChanged += new System.EventHandler(this.BookCaptureMainForm_LocationChanged);

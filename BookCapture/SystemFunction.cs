@@ -92,6 +92,12 @@ namespace BookCapture
                     mainForm.StopCapturing();
                 }
 
+                if ((Keys)vKeyCode == Keys.LControlKey && !mainForm.IsCaptureMacroRunning())
+                {
+                    logger.Info("Capture Macro Started");
+                    mainForm.MacroTimerStart();
+                }
+
                 if ((Keys)vKeyCode == Keys.Escape && mainForm.IsCaptureMacroRunning())
                 {
                     logger.Info("Capture Macro Stopped");

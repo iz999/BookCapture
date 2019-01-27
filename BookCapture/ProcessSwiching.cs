@@ -44,7 +44,7 @@ namespace BookCapture
         {
             logger.Info("Enter Swiching process");
 
-            IntPtr hWnd = targetProcess.MainWindowHandle;
+            IntPtr hWnd = targetProcess.Handle;
 
             if (!hWnd.Equals(IntPtr.Zero))
             {

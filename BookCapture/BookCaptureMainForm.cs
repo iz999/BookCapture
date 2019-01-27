@@ -39,7 +39,6 @@ namespace BookCapture
         private PdfMaker pdfMaker;
 
         private Bitmap prevBmap; // 빈 비트맵 생성
-        private int skipCount = 0;
 
         private enum MacroMode
         {
@@ -206,7 +205,7 @@ namespace BookCapture
                 targetWindowName = selectCaptureTarget.selectedWindowName;
                 targetWindowPID = selectCaptureTarget.selectedWindowPID;
 
-                TxtCaptureProgram.Text = selectCaptureTarget.selectedWindowName;                
+                //TxtCaptureProgram.Text = selectCaptureTarget.selectedWindowName;                
             }
 
             //processSwiching = new ProcessSwiching(Process.GetCurrentProcess().Id, Process.GetProcessById(Int32.Parse(targetWindowPID)).Id);
@@ -222,9 +221,15 @@ namespace BookCapture
             }
         }
 
-        private void BtnStart_Click(object sender, EventArgs e) //시작
+        /*private void BtnStart_Click(object sender, EventArgs e) //시작
         {
-            if (captureTargetSet == true && TxtRepeatTime.Text != null && TxtSaveFolder.Text != null && TxtCaptureProgram != null && Int32.Parse(targetWindowPID) > 0)
+            
+        }*/
+
+        public void MacroTimerStart()
+        {
+            //if (captureTargetSet == true && TxtRepeatTime.Text != null && TxtSaveFolder.Text != null && TxtCaptureProgram != null && Int32.Parse(targetWindowPID) > 0)
+            if (captureTargetSet == true && TxtRepeatTime.Text != String.Empty && TxtSaveFolder.Text != String.Empty && TxtDelayTime.Text != String.Empty)
             {
                 if (TxtKeyValue.Text != null || TxtMousePosX.Text != null)
                 {
@@ -255,9 +260,9 @@ namespace BookCapture
 
                     pdfMaker = new PdfMaker(TxtSaveFolder.Text);
 
-                    processSwiching.Swiching(Process.GetProcessById(Int32.Parse(targetWindowPID)));
+                    //processSwiching.Swiching(Process.GetProcessById(Int32.Parse(targetWindowPID)));
 
-                    logger.Info("ProcessSwiching Complete");
+                    //logger.Info("ProcessSwiching Complete");
 
                     macroTimer.Start();
                 }
@@ -271,42 +276,43 @@ namespace BookCapture
                 if (captureTargetSet == false)
                 {
                     MessageBox.Show("지정된 영역이 없습니다.", "정보부족", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }                
-                if (TxtSaveFolder.Text == null)
+                }
+                else if (TxtSaveFolder.Text == String.Empty)
                 {
                     MessageBox.Show("폴더가 지정되지 않았습니다.", "정보부족", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                if (TxtDelayTime.Text == null)
+                else if (TxtDelayTime.Text == String.Empty)
                 {
                     MessageBox.Show("지연시간이 정의되지 않았습니다.", "정보부족", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                if (TxtRepeatTime.Text == null)
+                else if (TxtRepeatTime.Text == String.Empty)
                 {
                     MessageBox.Show("반복횟수가 정의되지 않았습니다.", "정보부족", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                if (TxtKeyValue.Text == null)
+                else if (TxtKeyValue.Text == String.Empty)
                 {
                     MessageBox.Show("매크로 키가 정의되지 않았습니다.", "정보부족", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                if (TxtCaptureProgram.Text == null)
-                {
-                    MessageBox.Show("캡처대상 윈도우가 선택되지 않았습니다.", "정보부족", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                if (Int32.Parse(targetWindowPID) <= 0)
-                {
-                    MessageBox.Show("캡처대상 윈도우가 선택되지 않았습니다.", "정보부족", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                //if (TxtCaptureProgram.Text == null)
+                //{
+                //    MessageBox.Show("캡처대상 윈도우가 선택되지 않았습니다.", "정보부족", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //}
+                //if (Int32.Parse(targetWindowPID) <= 0)
+                //{
+                //    MessageBox.Show("캡처대상 윈도우가 선택되지 않았습니다.", "정보부족", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //}
                 else
                 {
                     MessageBox.Show("매크로를 실행할 수 없습니다.", "실행불가", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
 
             }
-
         }
 
         private void CaptureEvent(object sender, EventArgs e) //타이머 이벤트
         {
+            logger.Info("Cpature Macro Start");
+
             captureMacroStart = true;            
             
             Bitmap capturedImg = captureBoxForm.CaptureImg();
@@ -334,7 +340,7 @@ namespace BookCapture
 
                 PbCapturedImg.Image = capturedImg;
 
-                logger.Info("Set a Thumnail");
+                logger.Info("Set a Thumbnail");
 
                 timerCount++;
                 TxtRepeatCnt.Text = timerCount.ToString();
@@ -345,33 +351,23 @@ namespace BookCapture
             }
             else if(status == BitmapStatus.Duplicate || status == BitmapStatus.Empty || status == BitmapStatus.CurImgVacant) // 중복이거나 내용이 없을 경우, 캡쳐한 이미지가 null 일경우 건너뜀
             {
-                skipCount++;
-                logger.Warn("Capture Process Skiped / Skiped by : "  + status.ToString() + "/ Skip Count :" + skipCount.ToString());
+                logger.Warn("Capture Process Skiped / Skiped by : "  + status.ToString());
 
-                if (skipCount > 3)
+                logger.Info("Retry to capture / try to act macro");
+
+                //processSwiching.Swiching(Process.GetProcessById(Int32.Parse(targetWindowPID)));
+
+                //logger.Info("ProcessSwiching/Set Target Foreground Complete");
+
+                if (macroMode == MacroMode.KeyMode)
                 {
-                    logger.Info("Retry to capture");
-
-                    processSwiching.Swiching(Process.GetProcessById(Int32.Parse(targetWindowPID)));
-
-                    logger.Info("ProcessSwiching Complete");
-
-                    //Thread.Sleep(500);
-
-                    //logger.Info("Process Sleep End");
-
-                    if (macroMode == MacroMode.KeyMode)
-                    {
-                        SystemFunction.VKeyPress(TxtKeyValue.Text);
-                        logger.Info("Macro Key Pressed");
-                    }
-                    else
-                    {
-                        SystemFunction.VMouseClick(Int32.Parse(TxtMousePosX.Text), Int32.Parse(TxtMousePosY.Text));
-                        logger.Info("Macro Mouse Button Clicked");
-                    }
-
-                    skipCount = 0;
+                    SystemFunction.VKeyPress(TxtKeyValue.Text);
+                    logger.Info("Macro Key Pressed");
+                }
+                else
+                {
+                    SystemFunction.VMouseClick(Int32.Parse(TxtMousePosX.Text), Int32.Parse(TxtMousePosY.Text));
+                    logger.Info("Macro Mouse Button Clicked");
                 }
 
                 return;
@@ -385,17 +381,14 @@ namespace BookCapture
 
             if (timerCount >= Int32.Parse(TxtRepeatTime.Text)) // 정해진 카운트를 채웠을 경우 종료
             {
-                MacroTimerStop();       
+                MacroTimerStop();
+                logger.Info("Timer Event End");
             }
             else
             {
-                processSwiching.Swiching(Process.GetProcessById(Int32.Parse(targetWindowPID)));
+                //processSwiching.Swiching(Process.GetProcessById(Int32.Parse(targetWindowPID)));
 
-                logger.Info("ProcessSwiching Complete");
-
-                //Thread.Sleep(500);
-
-                //logger.Info("Process Sleep End");
+                //logger.Info("ProcessSwiching/Set Target Foreground Complete");
 
                 if (macroMode == MacroMode.KeyMode)
                 {
@@ -407,10 +400,6 @@ namespace BookCapture
                     SystemFunction.VMouseClick(Int32.Parse(TxtMousePosX.Text), Int32.Parse(TxtMousePosY.Text));
                     logger.Info("Macro Mouse Button Clicked");
                 }
-
-                skipCount = 0;
-
-                //processSwiching.Rollback();
             }
         }
 
