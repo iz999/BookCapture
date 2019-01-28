@@ -16,18 +16,18 @@ namespace BookCapture
 
         private Rectangle captureTarget;
 
-        private bool captureProcessStart = false;
+        private bool drawingCaptureBoxsStart = false;
         private bool captureMouseDown = false;
         private bool captureMouseMove = false;
         private bool captureTargetSet = false;
         private bool captureMacroStart = false;
 
-        private bool mousePostionSetting = false;
+        //private bool mousePostionSetting = false;
 
         private string targetWindowName;
-        private string targetWindowPID;
+        private string targetWindowHandle;
 
-        private ProcessSwiching processSwiching = new ProcessSwiching(Process.GetCurrentProcess());
+        //private ProcessSwiching processSwiching = new ProcessSwiching();
 
         private static Logger logger = LogManager.GetCurrentClassLogger();        
 
@@ -40,12 +40,6 @@ namespace BookCapture
 
         private Bitmap prevBmap; // 빈 비트맵 생성
 
-        private enum MacroMode
-        {
-            KeyMode,
-            MouseMode
-        }
-
         private enum BitmapStatus
         {
             Defalt,
@@ -54,9 +48,7 @@ namespace BookCapture
             Empty,
             CurImgVacant,
             SizeDiff
-        }
-
-        private MacroMode macroMode;
+        }       
 
 
         public BookCaptureMainForm()
@@ -75,7 +67,7 @@ namespace BookCapture
 
         private void PbCaptureBox_MouseDown(object sender, MouseEventArgs e) // 영역그리기 시작
         {
-            if (captureProcessStart)
+            if (drawingCaptureBoxsStart)
             {
                 startPosition = e.Location;
                 mousePosition = e.Location;
@@ -86,7 +78,7 @@ namespace BookCapture
 
         private void PbCaptureBox_Paint(object sender, PaintEventArgs e) //영역그리기
         {
-            if (captureProcessStart && captureMouseDown)
+            if (drawingCaptureBoxsStart && captureMouseDown)
             {
                 Pen redPen = new Pen(Color.Red, 1);
 
@@ -98,7 +90,7 @@ namespace BookCapture
 
         private void PbCaptureBox_MouseMove(object sender, MouseEventArgs e) //영역그리는 중
         {
-            if (captureProcessStart && captureMouseDown)
+            if (drawingCaptureBoxsStart && captureMouseDown)
             {
                 mousePosition = e.Location;
 
@@ -113,7 +105,7 @@ namespace BookCapture
 
             captureTargetSet = false;
 
-            if (captureProcessStart && captureMouseDown && captureMouseMove)
+            if (drawingCaptureBoxsStart && captureMouseDown && captureMouseMove)
             {
                 try
                 {
@@ -167,7 +159,7 @@ namespace BookCapture
 
         public void StopCapturing()
         {
-            if (captureProcessStart)
+            if (drawingCaptureBoxsStart)
             {
                 InitializeCapturing();
                 MainFormRollBack();
@@ -182,7 +174,7 @@ namespace BookCapture
             PbCaptureBox.Size = new Size(0, 0);
             PbCaptureBox.Visible = false;
 
-            captureProcessStart = false;
+            drawingCaptureBoxsStart = false;
             captureMouseDown = false;
             captureMouseMove = false;
 
@@ -203,9 +195,9 @@ namespace BookCapture
             if (selectCaptureTarget.ShowDialog() == DialogResult.OK)
             {
                 targetWindowName = selectCaptureTarget.selectedWindowName;
-                targetWindowPID = selectCaptureTarget.selectedWindowPID;
+                targetWindowHandle = selectCaptureTarget.selectedWindowHandle;
 
-                //TxtCaptureProgram.Text = selectCaptureTarget.selectedWindowName;                
+                TxtCaptureProgram.Text = selectCaptureTarget.selectedWindowName;                
             }
 
             //processSwiching = new ProcessSwiching(Process.GetCurrentProcess().Id, Process.GetProcessById(Int32.Parse(targetWindowPID)).Id);
@@ -221,55 +213,54 @@ namespace BookCapture
             }
         }
 
-        /*private void BtnStart_Click(object sender, EventArgs e) //시작
+        private void BtnStart_Click(object sender, EventArgs e) //시작
         {
-            
-        }*/
+            MacroTimerStart();
+        }
 
         public void MacroTimerStart()
         {
             //if (captureTargetSet == true && TxtRepeatTime.Text != null && TxtSaveFolder.Text != null && TxtCaptureProgram != null && Int32.Parse(targetWindowPID) > 0)
-            if (captureTargetSet == true && TxtRepeatTime.Text != String.Empty && TxtSaveFolder.Text != String.Empty && TxtDelayTime.Text != String.Empty)
+            if (captureTargetSet == true && TxtRepeatTime.Text != String.Empty && TxtSaveFolder.Text != String.Empty && TxtDelayTime.Text != String.Empty && TxtKeyValue.Text != String.Empty && TxtCaptureProgram.Text != String.Empty)
             {
-                if (TxtKeyValue.Text != null || TxtMousePosX.Text != null)
-                {
-                    captureBoxForm = new CaptureBoxForm();
+                captureBoxForm = new CaptureBoxForm();
 
-                    captureBoxForm.Show();
+                captureBoxForm.Show();
 
-                    captureBoxForm.Left = captureTarget.Left;
-                    captureBoxForm.Top = captureTarget.Top;
-                    captureBoxForm.Size = captureTarget.Size;
-                    captureBoxForm.FormBorderStyle = FormBorderStyle.None;
-                    captureBoxForm.BackColor = Color.Red;
-                    captureBoxForm.TransparencyKey = Color.Violet;
+                captureBoxForm.Left = captureTarget.Left;
+                captureBoxForm.Top = captureTarget.Top;
+                captureBoxForm.Size = captureTarget.Size;
+                captureBoxForm.FormBorderStyle = FormBorderStyle.None;
+                captureBoxForm.BackColor = Color.Red;
+                captureBoxForm.TransparencyKey = Color.Violet;
 
-                    Panel formCaptureBox = captureBoxForm.GetCaptureBox();
+                Panel formCaptureBox = captureBoxForm.GetCaptureBox();
 
-                    formCaptureBox.BackColor = captureBoxForm.TransparencyKey;
-                    formCaptureBox.Location = new Point(1, 1);
-                    formCaptureBox.Size = new Size(captureBoxForm.Width - 2, captureBoxForm.Height - 2);
-                    formCaptureBox.Visible = true;
+                formCaptureBox.BackColor = captureBoxForm.TransparencyKey;
+                formCaptureBox.Location = new Point(1, 1);
+                formCaptureBox.Size = new Size(captureBoxForm.Width - 2, captureBoxForm.Height - 2);
+                formCaptureBox.Visible = true;
 
 
-                    macroTimer = new System.Windows.Forms.Timer();
-                    macroTimer.Interval = Int32.Parse(TxtDelayTime.Text);
-                    macroTimer.Tick += new EventHandler(CaptureEvent);
+                macroTimer = new System.Windows.Forms.Timer();
+                macroTimer.Interval = Int32.Parse(TxtDelayTime.Text);
+                macroTimer.Tick += new EventHandler(CaptureEvent);
 
-                    BtnStart.BackColor = Color.Aquamarine;
+                BtnStart.BackColor = Color.Aquamarine;
 
-                    pdfMaker = new PdfMaker(TxtSaveFolder.Text);
+                pdfMaker = new PdfMaker(TxtSaveFolder.Text);
 
-                    //processSwiching.Swiching(Process.GetProcessById(Int32.Parse(targetWindowPID)));
+                ProcessSwiching.Swiching(targetWindowHandle);
 
-                    //logger.Info("ProcessSwiching Complete");
+                logger.Info("ProcessSwiching Complete");
 
-                    macroTimer.Start();
-                }
-                else
-                {
-                    MessageBox.Show("매크로 키 또는 마우스 위치가 지정되지 않았습니다.", "정보부족", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+
+                captureMacroStart = true;
+
+                PgbMacro.Value = 0;
+                PgbMacro.Maximum = Int32.Parse(TxtRepeatTime.Text);
+
+                macroTimer.Start();
             }
             else
             {
@@ -293,10 +284,10 @@ namespace BookCapture
                 {
                     MessageBox.Show("매크로 키가 정의되지 않았습니다.", "정보부족", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                //if (TxtCaptureProgram.Text == null)
-                //{
-                //    MessageBox.Show("캡처대상 윈도우가 선택되지 않았습니다.", "정보부족", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //}
+                else if (TxtCaptureProgram.Text == String.Empty)
+                {
+                    MessageBox.Show("캡처대상 윈도우가 선택되지 않았습니다.", "정보부족", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
                 //if (Int32.Parse(targetWindowPID) <= 0)
                 //{
                 //    MessageBox.Show("캡처대상 윈도우가 선택되지 않았습니다.", "정보부족", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -312,8 +303,6 @@ namespace BookCapture
         private void CaptureEvent(object sender, EventArgs e) //타이머 이벤트
         {
             logger.Info("Cpature Macro Start");
-
-            captureMacroStart = true;            
             
             Bitmap capturedImg = captureBoxForm.CaptureImg();
 
@@ -324,13 +313,13 @@ namespace BookCapture
             if (status == BitmapStatus.Defalt || status == BitmapStatus.Normal)
             {
 
-                string fileName = DateTime.Now.ToString("yyyyMMddHHmmssffffff") + ".jpg";
+                //string fileName = DateTime.Now.ToString("yyyyMMddHHmmssffffff") + ".jpg";
 
-                capturedImg.Save(TxtSaveFolder.Text + @"\" + fileName, ImageFormat.Jpeg);
+                //capturedImg.Save(TxtSaveFolder.Text + @"\" + fileName, ImageFormat.Jpeg);
 
-                logger.Info("Image File Name : " + fileName);
+                //logger.Info("Image File Name : " + fileName);
 
-                logger.Info("Image Complete");
+                //logger.Info("Image Complete");
 
                 MemoryStream stream = new MemoryStream();
                 capturedImg.Save(stream, ImageFormat.Bmp);
@@ -347,6 +336,8 @@ namespace BookCapture
 
                 logger.Info("Page Count : " + timerCount.ToString());
 
+                PgbMacro.PerformStep();
+
                 prevBmap = capturedImg;
             }
             else if(status == BitmapStatus.Duplicate || status == BitmapStatus.Empty || status == BitmapStatus.CurImgVacant) // 중복이거나 내용이 없을 경우, 캡쳐한 이미지가 null 일경우 건너뜀
@@ -355,20 +346,12 @@ namespace BookCapture
 
                 logger.Info("Retry to capture / try to act macro");
 
-                //processSwiching.Swiching(Process.GetProcessById(Int32.Parse(targetWindowPID)));
+                ProcessSwiching.Swiching(targetWindowHandle);
 
-                //logger.Info("ProcessSwiching/Set Target Foreground Complete");
+                logger.Info("ProcessSwiching Complete");
 
-                if (macroMode == MacroMode.KeyMode)
-                {
-                    SystemFunction.VKeyPress(TxtKeyValue.Text);
-                    logger.Info("Macro Key Pressed");
-                }
-                else
-                {
-                    SystemFunction.VMouseClick(Int32.Parse(TxtMousePosX.Text), Int32.Parse(TxtMousePosY.Text));
-                    logger.Info("Macro Mouse Button Clicked");
-                }
+                SystemFunction.VKeyPress(TxtKeyValue.Text);
+                logger.Info("Macro Key Pressed");
 
                 return;
             }
@@ -386,20 +369,12 @@ namespace BookCapture
             }
             else
             {
-                //processSwiching.Swiching(Process.GetProcessById(Int32.Parse(targetWindowPID)));
+                ProcessSwiching.Swiching(targetWindowHandle);
 
-                //logger.Info("ProcessSwiching/Set Target Foreground Complete");
+                logger.Info("ProcessSwiching Complete");
 
-                if (macroMode == MacroMode.KeyMode)
-                {
-                    SystemFunction.VKeyPress(TxtKeyValue.Text);
-                    logger.Info("Macro Key Pressed");
-                }
-                else
-                {
-                    SystemFunction.VMouseClick(Int32.Parse(TxtMousePosX.Text), Int32.Parse(TxtMousePosY.Text));
-                    logger.Info("Macro Mouse Button Clicked");
-                }
+                SystemFunction.VKeyPress(TxtKeyValue.Text);
+                logger.Info("Macro Key Pressed");
             }
         }
 
@@ -417,7 +392,7 @@ namespace BookCapture
 
         private void PrepareCapture() // 캡쳐 준비
         {
-            captureProcessStart = true;
+            drawingCaptureBoxsStart = true;
 
             Screen[] screens = Screen.AllScreens;
 
@@ -475,7 +450,7 @@ namespace BookCapture
 
         public bool IsCaptureBoxDrawing() 
         {
-            return captureProcessStart;
+            return drawingCaptureBoxsStart;
         }
 
         public bool IsCaptureMacroRunning() // 캡처매크로 동작 확인
@@ -510,53 +485,12 @@ namespace BookCapture
 
         private void BookCaptureMainForm_LocationChanged(object sender, EventArgs e)
         {
-            if (!captureProcessStart)
+            if (!drawingCaptureBoxsStart)
             {
                 mainFormPosition = new Point(this.Left, this.Top);
             }
         }
 
-        private void RdbModeSelect1_CheckedChanged(object sender, EventArgs e)
-        {
-            macroMode = MacroMode.KeyMode;
-            BtnSetKey.Enabled = true;
-            BtnSetKey.FlatStyle = FlatStyle.Popup;
-            BtnSetMouseXY.Enabled = false;
-            BtnSetMouseXY.FlatStyle = FlatStyle.Standard;
-        }
-
-        private void RdbModeSelect2_CheckedChanged(object sender, EventArgs e)
-        {
-            macroMode = MacroMode.MouseMode;
-            BtnSetKey.Enabled = false;
-            BtnSetKey.FlatStyle = FlatStyle.Standard;
-            BtnSetMouseXY.Enabled = true;
-            BtnSetMouseXY.FlatStyle = FlatStyle.Popup;
-        }
-
-        private void BtnSetMouseXY_Click(object sender, EventArgs e)
-        {
-            SystemFunction.MouseHookingStart();
-            mousePostionSetting = true;
-            this.TopMost = true;
-        }
-
-        public bool GetMousePostionSetting()
-        {
-            return mousePostionSetting;
-        }
-
-        public void SetMousePostionSetting(bool boolVal)
-        {
-            mousePostionSetting = boolVal;
-            this.TopMost = false;
-        }
-
-        public void SetMousePosition(int x, int y)
-        {
-            TxtMousePosX.Text = x.ToString();
-            TxtMousePosY.Text = y.ToString();
-        }
 
         private BitmapStatus ProofBitmap(Bitmap prevImg, Bitmap curImg)
         {

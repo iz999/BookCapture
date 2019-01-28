@@ -26,8 +26,8 @@ namespace BookCapture
         [DllImport("user32.dll")]
         private static extern long GetWindowLong(int hWnd, int nIndex);
 
-        [DllImport("user32.dll")]
-        private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
+        //[DllImport("user32.dll")]
+        //private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
 
         private const int GWL_STYLE = -16;
 
@@ -62,13 +62,13 @@ namespace BookCapture
 
                     if (GetWindowText(hWnd, pName, 256) > 0)
                     {
-                        uint pId;
+                        //uint pId;
 
-                        GetWindowThreadProcessId((IntPtr)hWnd, out pId);
+                        //GetWindowThreadProcessId((IntPtr)hWnd, out pId);
 
                         Dictionary<string, string> windowData = new Dictionary<string, string>();
                         windowData.Add("WindowName", pName.ToString());
-                        windowData.Add("ProcessID", pId.ToString());
+                        windowData.Add("HandlePointer", hWnd.ToString());
 
                         openWindowList.Add(windowData);
                     }

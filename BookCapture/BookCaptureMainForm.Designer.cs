@@ -45,22 +45,16 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.TxtRepeatCnt = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
-            this.BtnSetMouseXY = new System.Windows.Forms.Button();
-            this.TxtMousePosX = new System.Windows.Forms.TextBox();
-            this.TxtMousePosY = new System.Windows.Forms.TextBox();
-            this.RdbModeSelect1 = new System.Windows.Forms.RadioButton();
-            this.RdbModeSelect2 = new System.Windows.Forms.RadioButton();
-            this.GrbModeSelection = new System.Windows.Forms.GroupBox();
+            this.PgbMacro = new System.Windows.Forms.ProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.PbCapturedImg)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PbCaptureBox)).BeginInit();
-            this.GrbModeSelection.SuspendLayout();
             this.SuspendLayout();
             // 
             // TxtKeyValue
             // 
             this.TxtKeyValue.Enabled = false;
             this.TxtKeyValue.Font = new System.Drawing.Font("굴림", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.TxtKeyValue.Location = new System.Drawing.Point(96, 78);
+            this.TxtKeyValue.Location = new System.Drawing.Point(96, 9);
             this.TxtKeyValue.Name = "TxtKeyValue";
             this.TxtKeyValue.ReadOnly = true;
             this.TxtKeyValue.Size = new System.Drawing.Size(173, 22);
@@ -69,7 +63,7 @@
             // TxtDelayTime
             // 
             this.TxtDelayTime.Font = new System.Drawing.Font("굴림", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.TxtDelayTime.Location = new System.Drawing.Point(96, 164);
+            this.TxtDelayTime.Location = new System.Drawing.Point(96, 111);
             this.TxtDelayTime.Name = "TxtDelayTime";
             this.TxtDelayTime.Size = new System.Drawing.Size(123, 22);
             this.TxtDelayTime.TabIndex = 13;
@@ -79,19 +73,20 @@
             // 
             // BtnStart
             // 
-            this.BtnStart.Enabled = false;
+            this.BtnStart.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.BtnStart.Font = new System.Drawing.Font("굴림", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.BtnStart.Location = new System.Drawing.Point(141, 220);
+            this.BtnStart.Location = new System.Drawing.Point(141, 178);
             this.BtnStart.Name = "BtnStart";
             this.BtnStart.Size = new System.Drawing.Size(128, 22);
             this.BtnStart.TabIndex = 14;
             this.BtnStart.Text = "매크로시작";
             this.BtnStart.UseVisualStyleBackColor = true;
+            this.BtnStart.Click += new System.EventHandler(this.BtnStart_Click);
             // 
             // TxtRepeatTime
             // 
             this.TxtRepeatTime.Font = new System.Drawing.Font("굴림", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.TxtRepeatTime.Location = new System.Drawing.Point(190, 107);
+            this.TxtRepeatTime.Location = new System.Drawing.Point(190, 44);
             this.TxtRepeatTime.Name = "TxtRepeatTime";
             this.TxtRepeatTime.Size = new System.Drawing.Size(79, 22);
             this.TxtRepeatTime.TabIndex = 16;
@@ -103,18 +98,17 @@
             // 
             this.TxtCaptureProgram.Enabled = false;
             this.TxtCaptureProgram.Font = new System.Drawing.Font("굴림", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.TxtCaptureProgram.Location = new System.Drawing.Point(96, 192);
+            this.TxtCaptureProgram.Location = new System.Drawing.Point(96, 144);
             this.TxtCaptureProgram.Name = "TxtCaptureProgram";
             this.TxtCaptureProgram.ReadOnly = true;
             this.TxtCaptureProgram.Size = new System.Drawing.Size(173, 22);
             this.TxtCaptureProgram.TabIndex = 18;
-            this.TxtCaptureProgram.Visible = false;
             // 
             // BtnSetKey
             // 
             this.BtnSetKey.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.BtnSetKey.Font = new System.Drawing.Font("굴림", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.BtnSetKey.Location = new System.Drawing.Point(15, 78);
+            this.BtnSetKey.Location = new System.Drawing.Point(15, 9);
             this.BtnSetKey.Name = "BtnSetKey";
             this.BtnSetKey.Size = new System.Drawing.Size(75, 22);
             this.BtnSetKey.TabIndex = 22;
@@ -127,7 +121,7 @@
             // 
             this.button2.Enabled = false;
             this.button2.Font = new System.Drawing.Font("굴림", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.button2.Location = new System.Drawing.Point(15, 164);
+            this.button2.Location = new System.Drawing.Point(15, 111);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 22);
             this.button2.TabIndex = 23;
@@ -139,7 +133,7 @@
             // 
             this.button3.Enabled = false;
             this.button3.Font = new System.Drawing.Font("굴림", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.button3.Location = new System.Drawing.Point(15, 107);
+            this.button3.Location = new System.Drawing.Point(15, 44);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(75, 22);
             this.button3.TabIndex = 24;
@@ -174,7 +168,7 @@
             // 
             this.BtnStartCapture.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.BtnStartCapture.Font = new System.Drawing.Font("굴림", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.BtnStartCapture.Location = new System.Drawing.Point(15, 220);
+            this.BtnStartCapture.Location = new System.Drawing.Point(15, 178);
             this.BtnStartCapture.Name = "BtnStartCapture";
             this.BtnStartCapture.Size = new System.Drawing.Size(120, 22);
             this.BtnStartCapture.TabIndex = 30;
@@ -186,20 +180,19 @@
             // 
             this.BtnCaptureProgram.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.BtnCaptureProgram.Font = new System.Drawing.Font("굴림", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.BtnCaptureProgram.Location = new System.Drawing.Point(15, 192);
+            this.BtnCaptureProgram.Location = new System.Drawing.Point(15, 144);
             this.BtnCaptureProgram.Name = "BtnCaptureProgram";
             this.BtnCaptureProgram.Size = new System.Drawing.Size(75, 22);
             this.BtnCaptureProgram.TabIndex = 31;
             this.BtnCaptureProgram.Text = "캡처대상";
             this.BtnCaptureProgram.UseVisualStyleBackColor = true;
-            this.BtnCaptureProgram.Visible = false;
             this.BtnCaptureProgram.Click += new System.EventHandler(this.BtnCaptureProgram_Click);
             // 
             // BtnSaveFolder
             // 
             this.BtnSaveFolder.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.BtnSaveFolder.Font = new System.Drawing.Font("굴림", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.BtnSaveFolder.Location = new System.Drawing.Point(15, 136);
+            this.BtnSaveFolder.Location = new System.Drawing.Point(15, 78);
             this.BtnSaveFolder.Name = "BtnSaveFolder";
             this.BtnSaveFolder.Size = new System.Drawing.Size(75, 22);
             this.BtnSaveFolder.TabIndex = 32;
@@ -211,7 +204,7 @@
             // 
             this.TxtSaveFolder.Enabled = false;
             this.TxtSaveFolder.Font = new System.Drawing.Font("굴림", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.TxtSaveFolder.Location = new System.Drawing.Point(96, 136);
+            this.TxtSaveFolder.Location = new System.Drawing.Point(96, 78);
             this.TxtSaveFolder.Name = "TxtSaveFolder";
             this.TxtSaveFolder.ReadOnly = true;
             this.TxtSaveFolder.Size = new System.Drawing.Size(173, 22);
@@ -222,7 +215,7 @@
             this.textBox1.BackColor = System.Drawing.SystemColors.ControlLight;
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox1.Font = new System.Drawing.Font("굴림", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.textBox1.Location = new System.Drawing.Point(242, 167);
+            this.textBox1.Location = new System.Drawing.Point(242, 114);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(27, 15);
             this.textBox1.TabIndex = 34;
@@ -231,7 +224,7 @@
             // TxtRepeatCnt
             // 
             this.TxtRepeatCnt.Font = new System.Drawing.Font("굴림", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.TxtRepeatCnt.Location = new System.Drawing.Point(96, 107);
+            this.TxtRepeatCnt.Location = new System.Drawing.Point(96, 44);
             this.TxtRepeatCnt.Name = "TxtRepeatCnt";
             this.TxtRepeatCnt.ReadOnly = true;
             this.TxtRepeatCnt.Size = new System.Drawing.Size(76, 22);
@@ -245,88 +238,19 @@
             this.textBox2.BackColor = System.Drawing.SystemColors.ControlLight;
             this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox2.Font = new System.Drawing.Font("굴림", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.textBox2.Location = new System.Drawing.Point(178, 111);
+            this.textBox2.Location = new System.Drawing.Point(178, 48);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(10, 15);
             this.textBox2.TabIndex = 36;
             this.textBox2.Text = "/";
             // 
-            // BtnSetMouseXY
+            // PgbMacro
             // 
-            this.BtnSetMouseXY.Enabled = false;
-            this.BtnSetMouseXY.Font = new System.Drawing.Font("굴림", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.BtnSetMouseXY.Location = new System.Drawing.Point(15, 50);
-            this.BtnSetMouseXY.Name = "BtnSetMouseXY";
-            this.BtnSetMouseXY.Size = new System.Drawing.Size(75, 22);
-            this.BtnSetMouseXY.TabIndex = 37;
-            this.BtnSetMouseXY.TabStop = false;
-            this.BtnSetMouseXY.Text = "마우스";
-            this.BtnSetMouseXY.UseVisualStyleBackColor = true;
-            this.BtnSetMouseXY.Click += new System.EventHandler(this.BtnSetMouseXY_Click);
-            // 
-            // TxtMousePosX
-            // 
-            this.TxtMousePosX.Enabled = false;
-            this.TxtMousePosX.Font = new System.Drawing.Font("굴림", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.TxtMousePosX.Location = new System.Drawing.Point(96, 50);
-            this.TxtMousePosX.Name = "TxtMousePosX";
-            this.TxtMousePosX.ReadOnly = true;
-            this.TxtMousePosX.Size = new System.Drawing.Size(76, 22);
-            this.TxtMousePosX.TabIndex = 38;
-            this.TxtMousePosX.TabStop = false;
-            this.TxtMousePosX.Text = "0";
-            this.TxtMousePosX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // TxtMousePosY
-            // 
-            this.TxtMousePosY.Enabled = false;
-            this.TxtMousePosY.Font = new System.Drawing.Font("굴림", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.TxtMousePosY.Location = new System.Drawing.Point(193, 50);
-            this.TxtMousePosY.Name = "TxtMousePosY";
-            this.TxtMousePosY.ReadOnly = true;
-            this.TxtMousePosY.Size = new System.Drawing.Size(76, 22);
-            this.TxtMousePosY.TabIndex = 39;
-            this.TxtMousePosY.TabStop = false;
-            this.TxtMousePosY.Text = "0";
-            this.TxtMousePosY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // RdbModeSelect1
-            // 
-            this.RdbModeSelect1.AutoSize = true;
-            this.RdbModeSelect1.Checked = true;
-            this.RdbModeSelect1.Location = new System.Drawing.Point(38, 20);
-            this.RdbModeSelect1.Name = "RdbModeSelect1";
-            this.RdbModeSelect1.Size = new System.Drawing.Size(83, 16);
-            this.RdbModeSelect1.TabIndex = 40;
-            this.RdbModeSelect1.TabStop = true;
-            this.RdbModeSelect1.Tag = "KeyMode";
-            this.RdbModeSelect1.Text = "키보드모드";
-            this.RdbModeSelect1.UseVisualStyleBackColor = true;
-            this.RdbModeSelect1.CheckedChanged += new System.EventHandler(this.RdbModeSelect1_CheckedChanged);
-            // 
-            // RdbModeSelect2
-            // 
-            this.RdbModeSelect2.AutoSize = true;
-            this.RdbModeSelect2.Location = new System.Drawing.Point(136, 20);
-            this.RdbModeSelect2.Name = "RdbModeSelect2";
-            this.RdbModeSelect2.Size = new System.Drawing.Size(83, 16);
-            this.RdbModeSelect2.TabIndex = 41;
-            this.RdbModeSelect2.TabStop = true;
-            this.RdbModeSelect2.Tag = "MouseMode";
-            this.RdbModeSelect2.Text = "마우스모드";
-            this.RdbModeSelect2.UseVisualStyleBackColor = true;
-            this.RdbModeSelect2.Visible = false;
-            this.RdbModeSelect2.CheckedChanged += new System.EventHandler(this.RdbModeSelect2_CheckedChanged);
-            // 
-            // GrbModeSelection
-            // 
-            this.GrbModeSelection.Controls.Add(this.RdbModeSelect2);
-            this.GrbModeSelection.Controls.Add(this.RdbModeSelect1);
-            this.GrbModeSelection.Location = new System.Drawing.Point(15, 1);
-            this.GrbModeSelection.Name = "GrbModeSelection";
-            this.GrbModeSelection.Size = new System.Drawing.Size(254, 43);
-            this.GrbModeSelection.TabIndex = 42;
-            this.GrbModeSelection.TabStop = false;
+            this.PgbMacro.Location = new System.Drawing.Point(15, 215);
+            this.PgbMacro.Name = "PgbMacro";
+            this.PgbMacro.Size = new System.Drawing.Size(254, 25);
+            this.PgbMacro.Step = 1;
+            this.PgbMacro.TabIndex = 37;
             // 
             // BookCaptureMainForm
             // 
@@ -334,10 +258,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLight;
             this.ClientSize = new System.Drawing.Size(461, 252);
-            this.Controls.Add(this.GrbModeSelection);
-            this.Controls.Add(this.TxtMousePosY);
-            this.Controls.Add(this.TxtMousePosX);
-            this.Controls.Add(this.BtnSetMouseXY);
+            this.Controls.Add(this.PgbMacro);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.TxtRepeatCnt);
             this.Controls.Add(this.textBox1);
@@ -359,14 +280,12 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "BookCaptureMainForm";
-            this.Text = "Capture Macro - Press Control Key to Start";
+            this.Text = "Capture Macro";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BookCaptureMainForm_FormClosing);
             this.Load += new System.EventHandler(this.BookCaptureMainForm_Load);
             this.LocationChanged += new System.EventHandler(this.BookCaptureMainForm_LocationChanged);
             ((System.ComponentModel.ISupportInitialize)(this.PbCapturedImg)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PbCaptureBox)).EndInit();
-            this.GrbModeSelection.ResumeLayout(false);
-            this.GrbModeSelection.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -390,12 +309,7 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.TextBox TxtRepeatCnt;
         private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.Button BtnSetMouseXY;
-        private System.Windows.Forms.TextBox TxtMousePosX;
-        private System.Windows.Forms.TextBox TxtMousePosY;
-        private System.Windows.Forms.RadioButton RdbModeSelect1;
-        private System.Windows.Forms.RadioButton RdbModeSelect2;
-        private System.Windows.Forms.GroupBox GrbModeSelection;
+        private System.Windows.Forms.ProgressBar PgbMacro;
     }
 }
 

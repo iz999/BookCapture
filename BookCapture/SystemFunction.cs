@@ -19,8 +19,8 @@ namespace BookCapture
         [DllImport("user32.dll")]
         static extern IntPtr SetWindowsHookEx(int hkId, LowLevelKeyboardProc callbackFn, IntPtr hkInstance, uint threadId); //키보드 후킹 프로세스 등록
 
-        [DllImport("user32.dll")]
-        static extern IntPtr SetWindowsHookEx(int hkId, LowLevelMouseProc callbackFn, IntPtr hkInstance, uint threadId); //마우스 프로세스 등록
+        //[DllImport("user32.dll")]
+        //static extern IntPtr SetWindowsHookEx(int hkId, LowLevelMouseProc callbackFn, IntPtr hkInstance, uint threadId); //마우스 프로세스 등록
 
         [DllImport("user32.dll")]
         static extern IntPtr CallNextHookEx(IntPtr hkId, int nCode, IntPtr wParam, IntPtr lParam); //다음 후킹에 메세지 전달
@@ -34,18 +34,18 @@ namespace BookCapture
         [DllImport("User32.dll")]
         public static extern void keybd_event(uint vk, uint scan, uint flags, uint extraInfo); //키보드 이벤트
 
-        [DllImport("user32.dll")]
-        private static extern void mouse_event(int dwFlags, int dx, int dy, int cButtons, int dwExtraInfo); // 마우스 이벤트 실행
+        //[DllImport("user32.dll")]
+        //private static extern void mouse_event(int dwFlags, int dx, int dy, int cButtons, int dwExtraInfo); // 마우스 이벤트 실행
 
-        [DllImport("user32.dll")] 
-        private static extern int GetCursorPos(ref Point mousePosition); //마우스 포지션 GET
+        //[DllImport("user32.dll")] 
+        //private static extern int GetCursorPos(ref Point mousePosition); //마우스 포지션 GET
 
-        [DllImport("user32.dll")]
-        private static extern int SetCursorPos(int x, int y); //마우스 포지션 SET
+        //[DllImport("user32.dll")]
+        //private static extern int SetCursorPos(int x, int y); //마우스 포지션 SET
 
 
         private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam); //키보드 후킹
-        private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);  // 마우스 후킹
+        //private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);  // 마우스 후킹
 
         private static BookCaptureMainForm mainForm;
 
@@ -58,18 +58,18 @@ namespace BookCapture
 
 
         //마우스 메세지
-        private const int WH_MOUSE_LL = 14;
+        /*private const int WH_MOUSE_LL = 14;
         private const int WM_LBUTTONDOWN = 0x0201;
         private const int WM_LBUTTONUP = 0x0202;
         private const int WM_MOUSEMOVE = 0x0200;
         private const int WM_MOUSEWHEEL = 0x020A;
         private const int WM_RBUTTONDOWN = 0x0204;
-        private const int WM_RBUTTONUP = 0x0205;
+        private const int WM_RBUTTONUP = 0x0205;*/
 
         private static LowLevelKeyboardProc callbackKeyboard = new LowLevelKeyboardProc(HookKeyBoadCallBackFn);
-        private static LowLevelMouseProc callbackMouse = new LowLevelMouseProc(HookMouseCallBackFn);
+        //private static LowLevelMouseProc callbackMouse = new LowLevelMouseProc(HookMouseCallBackFn);
         private static IntPtr hkKeyboardId = IntPtr.Zero;
-        private static IntPtr hkMouseId = IntPtr.Zero;
+        //private static IntPtr hkMouseId = IntPtr.Zero;
 
         private static IntPtr HookKeyBoadCallBackFn(int nCode, IntPtr wParam, IntPtr lParam)
         {
@@ -92,11 +92,11 @@ namespace BookCapture
                     mainForm.StopCapturing();
                 }
 
-                if ((Keys)vKeyCode == Keys.LControlKey && !mainForm.IsCaptureMacroRunning())
+                /*if ((Keys)vKeyCode == Keys.LControlKey && !mainForm.IsCaptureMacroRunning())
                 {
                     logger.Info("Capture Macro Started");
                     mainForm.MacroTimerStart();
-                }
+                }*/
 
                 if ((Keys)vKeyCode == Keys.Escape && mainForm.IsCaptureMacroRunning())
                 {
@@ -108,7 +108,7 @@ namespace BookCapture
             return CallNextHookEx(hkKeyboardId, nCode, wParam, lParam);
         }
 
-        private static IntPtr HookMouseCallBackFn(int nCode, IntPtr wParam, IntPtr lParam)
+        /*private static IntPtr HookMouseCallBackFn(int nCode, IntPtr wParam, IntPtr lParam)
         {
             if (nCode >= 0 && wParam == (IntPtr)WM_MOUSEMOVE)
             {
@@ -134,7 +134,7 @@ namespace BookCapture
             }
 
             return CallNextHookEx(hkMouseId, nCode, wParam, lParam);
-        }
+        }*/
 
         public static void KeyboardHookingStart(BookCaptureMainForm bookCapture)
         {
@@ -147,23 +147,23 @@ namespace BookCapture
 
         }
 
-        public static void MouseHookingStart()
+        /*(public static void MouseHookingStart()
         {
             string curProcModuleNm = Process.GetCurrentProcess().MainModule.ModuleName;
 
             hkMouseId = SetWindowsHookEx(WH_MOUSE_LL, callbackMouse, GetModuleHandle(curProcModuleNm), 0);
 
-        }
+        }*/
 
         public static void KeyboardHookingStop()
         {
             UnhookWindowsHookEx(hkKeyboardId);
         }
 
-        public static void MouseHookingStop()
+        /*public static void MouseHookingStop()
         {
             UnhookWindowsHookEx(hkMouseId);
-        }
+        }*/
 
         public static Keys GetPressedKey()
         {
@@ -178,11 +178,11 @@ namespace BookCapture
             keybd_event((uint)vKey, 0, WM_KEYUP, 0);
         }
 
-        public static void VMouseClick(int x, int y)
+        /*public static void VMouseClick(int x, int y)
         {
             SetCursorPos(x, y);
             //mouse_event((int)WM_LBUTTONDOWN, 0, 0, 0, 0);
             mouse_event((int)WM_LBUTTONUP, 0, 0, 0, 0);
-        }
+        }*/
     }
 }

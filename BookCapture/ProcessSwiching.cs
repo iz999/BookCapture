@@ -25,26 +25,26 @@ namespace BookCapture
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         static extern int GetWindowTextLength(IntPtr hWnd);
 
-        [DllImport("user32.dll")]
+        /*[DllImport("user32.dll")]
         private static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
 
         private const int SW_SHOWNORMAL = 1;
         private const int SW_SHOWMINIMIZED = 2;
-        private const int SW_SHOWMAXIMIZED = 3;
+        private const int SW_SHOWMAXIMIZED = 3;*/
 
-        private Process mainProcess;
+        //private Process mainProcess;
         //private int targetProcessId;
 
-        public ProcessSwiching(Process currentProcess)
+        /*public ProcessSwiching(Process currentProcess)
         {
             this.mainProcess = currentProcess;
-        }
+        }*/
 
-        public void Swiching(Process targetProcess)
+        public static void Swiching(string targetProcessHandle)
         {
             logger.Info("Enter Swiching process");
 
-            IntPtr hWnd = targetProcess.Handle;
+            IntPtr hWnd = (IntPtr)Int32.Parse(targetProcessHandle);
 
             if (!hWnd.Equals(IntPtr.Zero))
             {
@@ -58,7 +58,7 @@ namespace BookCapture
             }
         }
 
-        public void Rollback()
+        /*public void Rollback()
         {
             logger.Info("Enter Rollback Process");
 
@@ -74,9 +74,9 @@ namespace BookCapture
 
                 logger.Info("Current Active Window : " + GetCaptionOfActiveWindow());
             }
-        }
+        }*/
 
-        private string GetCaptionOfActiveWindow()
+        private static string GetCaptionOfActiveWindow()
         {
             var strTitle = string.Empty;
             var handle = GetForegroundWindow();

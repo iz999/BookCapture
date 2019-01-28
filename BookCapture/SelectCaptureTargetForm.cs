@@ -15,7 +15,7 @@ namespace BookCapture
     {
         
         private string currentWindowName;
-        private string currentWindowPID;    
+        private string currentWindowHandle;    
         
         public string selectedWindowName
         {
@@ -29,15 +29,15 @@ namespace BookCapture
             }
         }
 
-        public string selectedWindowPID
+        public string selectedWindowHandle
         {
             get
             {
-                return currentWindowPID;
+                return currentWindowHandle;
             }
             set
             {
-                currentWindowPID = selectedWindowPID;
+                currentWindowHandle = selectedWindowHandle;
             }
         }
 
@@ -57,7 +57,7 @@ namespace BookCapture
             ArrayList gridHeaders = new ArrayList();
 
             gridHeaders.Add("윈도우 이름");
-            gridHeaders.Add("프로세스ID");
+            gridHeaders.Add("핸들포인터");
 
             for(int i = 0; i < DgvOpenWindowList.ColumnCount; i++)
             {
@@ -69,16 +69,16 @@ namespace BookCapture
             for(int i = 0; i < windowList.Count; i++)
             {
                 string windowName = ((Dictionary<string, string>)windowList[i])["WindowName"];
-                string processID = ((Dictionary<string, string>)windowList[i])["ProcessID"];
+                string handlePointer = ((Dictionary<string, string>)windowList[i])["HandlePointer"];
 
-                DgvOpenWindowList.Rows.Add(windowName,  processID);
+                DgvOpenWindowList.Rows.Add(windowName, handlePointer);
             }
         }
 
         private void DgvOpenWindowList_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             currentWindowName = (string)DgvOpenWindowList.CurrentRow.Cells[0].Value;
-            currentWindowPID = (string)DgvOpenWindowList.CurrentRow.Cells[1].Value;
+            currentWindowHandle = (string)DgvOpenWindowList.CurrentRow.Cells[1].Value;
 
             this.DialogResult = DialogResult.OK;
 
