@@ -26,6 +26,9 @@ namespace BookCapture
         [DllImport("user32.dll")]
         private static extern long GetWindowLong(int hWnd, int nIndex);
 
+        [DllImport("user32.dll")]
+        public static extern bool IsWindowVisible(int hwnd);
+
         //[DllImport("user32.dll")]
         //private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
 
@@ -49,30 +52,31 @@ namespace BookCapture
         private bool EnumWindowsProc(int hWnd, int lParam)
         {
             //윈도우 스타일 확인
-            UInt32 style = (UInt32)GetWindowLong(hWnd, GWL_STYLE);
+            //UInt32 style = (UInt32)GetWindowLong(hWnd, GWL_STYLE);
 
             //해당 윈도우 캡션 확인
-            if ((style & 0x10000000L) == 0x10000000L && (style & 0x00C00000L) == 0x00C00000L)
+            //if ((style & 0x10000000L) == 0x10000000L && (style & 0x00C00000L) == 0x00C00000L)
+            //{
+            //바탕화면이 부모인지 확인
+            //if (GetParent(hWnd) == 0)
+            if (IsWindowVisible(hWnd))
             {
-                //바탕화면이 부모인지 확인
-                if (GetParent(hWnd) == 0)
+                StringBuilder pName = new StringBuilder(256);
+                //프로그램 타이틀 확인
+
+                if (GetWindowText(hWnd, pName, 256) > 0)
                 {
-                    StringBuilder pName = new StringBuilder(256);
-                    //프로그램 타이틀 확인
+                    //uint pId;
 
-                    if (GetWindowText(hWnd, pName, 256) > 0)
-                    {
-                        //uint pId;
+                    //GetWindowThreadProcessId((IntPtr)hWnd, out pId);
 
-                        //GetWindowThreadProcessId((IntPtr)hWnd, out pId);
+                    Dictionary<string, string> windowData = new Dictionary<string, string>();
+                    windowData.Add("WindowName", pName.ToString());
+                    windowData.Add("HandlePointer", hWnd.ToString());
 
-                        Dictionary<string, string> windowData = new Dictionary<string, string>();
-                        windowData.Add("WindowName", pName.ToString());
-                        windowData.Add("HandlePointer", hWnd.ToString());
-
-                        openWindowList.Add(windowData);
-                    }
+                    openWindowList.Add(windowData);
                 }
+ //               }
             }
             return true;
         }
